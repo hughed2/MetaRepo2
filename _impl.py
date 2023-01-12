@@ -104,7 +104,7 @@ def updateDoc(notateBody, userInfo):
     timestamp = time.time()
     archiveFormat = {"timestamp" : timestamp,
                      "userId" : userInfo["username"],
-                     "comment" : notateBody.comment or '',
+                     "comment" : notateBody.archiveComment or '',
                      "previous" : {}}
     findFilters = {"docId" : docId}
     doc = findElasticsearch(findFilters, userInfo)

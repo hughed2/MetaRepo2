@@ -19,10 +19,10 @@ class NotateBody(BaseModel):
     siteMetadata: Union[dict, None] = None
     targetClass: Union[str, None] = None
     targetMetadata: Union[dict, None] = None
+    archiveComment: Union[str, None] = None
     
 class FindBody(BaseModel):
     filters: dict = {}
-    comment: Union[str, None] = ''
 
 ### API ENDPOINTS
 
