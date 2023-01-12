@@ -14,14 +14,15 @@ class NotateBody(BaseModel):
     docId: Union[str, None] = None
     docSetId: Union[List[str], None] = None
     displayName: Union[str, None] = None
-    metadata: Union[dict, None] = None
-    systemType: Union[str, None] = None    
-    systemMetadata: Union[dict, None] = None
-    targetType: Union[str, None] = None
+    userMetadata: Union[dict, None] = None
+    siteClass: Union[str, None] = None    
+    siteMetadata: Union[dict, None] = None
+    targetClass: Union[str, None] = None
     targetMetadata: Union[dict, None] = None
     
 class FindBody(BaseModel):
-    filters: dict = []
+    filters: dict = {}
+    comment: Union[str, None] = ''
 
 ### API ENDPOINTS
 

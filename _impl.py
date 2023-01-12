@@ -44,7 +44,7 @@ def findElasticsearch(filters, userInfo):
     groups.append(userInfo["username"]) # sso is a valid "group"
     groupQuery = {"bool" : {"should" : []}}
     for group in groups:
-        groupQuery["bool"]["should"].append({"term" : {"systemMetadata.tenant" : group}})
+        groupQuery["bool"]["should"].append({"term" : {"siteMetadata.tenant" : group}})
     query["query"]["bool"]["must"].append(groupQuery)
     
 
@@ -71,22 +71,22 @@ def createDoc(notateBody, userInfo):
     # Initialize our metadata fields in case the user didn't supply them
     metasheet['metadata'] = notateBody.metadata or {}
     notateBody.targetMetadata = notateBody.targetMetadata or {}
-    notateBody.systemMetadata = notateBody.systemMetadata or {}
+    notateBody.siteMetadata = notateBody.siteMetadata or {}
     metasheet['frameworkArchive'] = []
     metasheet['metadataArchive'] = []
     metasheet['targetMetadataArchive'] = []
-    metasheet['systemMetadataArchive'] = []
+    metasheet['siteMetadataArchive'] = []
 
 
     if 'targetType' not in notateBody:
         raise HTTPException(status_code=400, detail="Must include a targetType")
-    metaTarget = getMetaTarget(notateBody['systemType'])()
+    metaTarget = getMetaTarget(notateBody['siteType'])()
     metasheet['targetMetadata'] = metaTarget.validateTargetMetadata(notateBody, userInfo)
 
-    if 'systemType' not in notateBody:
-        raise HTTPException(status_code=400, detail="Must include a systemType")
-    metaSystem = getMetaSystem(notateBody['systemType'])()
-    metasheet['systemMetadata'] = metaSystem.validateSystemMetadata(notateBody, userInfo)
+    if 'siteType' not in notateBody:
+        raise HTTPException(status_code=400, detail="Must include a siteType")
+    metaSite = getMetaSite(notateBody['siteType'])()
+    metasheet['siteMetadata'] = metaSite.validateSiteMetadata(notateBody, userInfo)
 
     es = connectElasticsearch()
     es.create(index="meta", id=docId, document=metasheet)
@@ -102,7 +102,10 @@ def updateDoc(notateBody, userInfo):
     # First, make sure the document exists and is available to the user
     docId = notateBody.docId
     timestamp = time.time()
-    archiveFormat = {"timestamp" : timestamp, "userId" : userInfo["username"], "previous" : {}}
+    archiveFormat = {"timestamp" : timestamp,
+                     "userId" : userInfo["username"],
+                     "comment" : notateBody.comment or '',
+                     "previous" : {}}
     findFilters = {"docId" : docId}
     doc = findElasticsearch(findFilters, userInfo)
     if not doc:
@@ -122,6 +125,7 @@ def updateDoc(notateBody, userInfo):
         updateQuery["doc"]["docSetId"] = notateBody.docSetId
         oldFramework["docSetId"] = doc["docSetId"]
         
+    # oldFramework keeps track of framework level metadata changes--if it has anything, we need to add it to the archive
     if oldFramework:
         archiveFormat["previous"] = oldFramework
         frameworkArchive = doc["frameworkArchive"]
@@ -140,8 +144,8 @@ def updateDoc(notateBody, userInfo):
     metaTarget = getMetaTarget(doc['targetType'])()
     updateQuery = metaTarget.updateTargetMetadata(doc, notateBody, updateQuery, archiveFormat)
 
-    metaSystem = getMetaSystem(doc['systemType'])()
-    updateQuery = metaSystem.updateSystemMetadata(doc, notateBody, updateQuery, archiveFormat)
+    metaSite = getMetaSite(doc['siteType'])()
+    updateQuery = metaSite.updateSiteMetadata(doc, notateBody, updateQuery, archiveFormat)
 
     es = connectElasticsearch()
     update = es.update(index="meta", id=docId, body=updateQuery, refresh=True)
@@ -150,13 +154,13 @@ def updateDoc(notateBody, userInfo):
     return ''
 
 ### Get MetaSite
-from MetaSystems.DT4DSystem import DT4DSystem
+from MetaSites.DT4DSite import DT4DSite
 
-systemDict = {DT4DSystem.name : DT4DSystem}
-def getMetaSystem(name):
-    if name not in systemDict:
-        raise HTTPException(status_code=400, detail="Nonexistent system type: %s" % name)
-    return systemDict[name]
+siteDict = {DT4DSite.name : DT4DSite}
+def getMetaSite(name):
+    if name not in siteDict:
+        raise HTTPException(status_code=400, detail="Nonexistent site type: %s" % name)
+    return siteDict[name]
 
 ### Get MetaTarget
 from MetaTargets.DT4DTarget import DT4DTarget
