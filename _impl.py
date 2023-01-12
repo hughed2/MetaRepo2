@@ -52,11 +52,12 @@ def findElasticsearch(filters, userInfo):
 
     # We can provide this query as is. It'll get sanitized when it gets converted from dict to json
     es = connectElasticsearch()
-    results = es.search(index="meta", body=query)
+    results = es.search(index="meta", body=query, size=100)
 
     # We only want to return the actual sheets, not the elasticsearch cruft
     results = results["hits"]["hits"]
     results = [doc["_source"] for doc in results]
+    
     return results
     
 def createDoc(notateBody, userInfo):
