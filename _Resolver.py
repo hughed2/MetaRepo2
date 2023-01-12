@@ -14,10 +14,12 @@ def _getMeta(metaTypeCls, metaTypeStr, name):
         raise HTTPException(status_code=400, detail="Nonexistent %s type: %s" % (metaTypeStr, name))
     return metaClass
 
-def getMetaSite(name):
+def getMetaSite(metadata):
+    name = metadata.siteClass
     metaClass = _getMeta('MetaSites', 'site', name)
     return metaClass
 
-def getMetaTarget(name):
+def getMetaTarget(metadata):
+    name = metadata.targetClass
     metaClass = _getMeta('MetaTargets', 'target', name)
     return metaClass

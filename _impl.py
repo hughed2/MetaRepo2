@@ -82,12 +82,12 @@ def createDoc(notateBody, userInfo):
 
     if 'targetType' not in notateBody:
         raise HTTPException(status_code=400, detail="Must include a targetType")
-    metaTarget = getMetaTarget(notateBody['siteType'])()
+    metaTarget = getMetaTarget(notateBody)()
     metasheet['targetMetadata'] = metaTarget.validateTargetMetadata(notateBody, userInfo)
 
     if 'siteType' not in notateBody:
         raise HTTPException(status_code=400, detail="Must include a siteType")
-    metaSite = getMetaSite(notateBody['siteType'])()
+    metaSite = getMetaSite(notateBody)()
     metasheet['siteMetadata'] = metaSite.validateSiteMetadata(notateBody, userInfo)
 
     es = connectElasticsearch()
