@@ -11,6 +11,8 @@ config.read('metarepo.conf')
 
 from auth import getGroups
 
+from _resolver import getMetaSite, getMetaTarget 
+
 ### DOC STATUS NAMES
 class DocStatus(Enum):
     IN_PROGRESS = 0
@@ -153,25 +155,3 @@ def updateDoc(notateBody, userInfo):
         raise HTTPException(status_code=500, detail="Update failed for unknown reason")
     return ''
 
-### GIVEN A CLASS NAME, DYNAMICALLY RETURN IT
-
-import importlib
-
-def getMeta(metaType, name):
-    metaModule = importlib.import_module(("%s.%s") % (metaType, name))
-    metaClass = getattr(metaModule, name)
-    return metaClass
-
-def getMetaSite(name):
-    try:
-        metaClass = getMeta('MetaSites', name)
-    except:
-        raise HTTPException(status_code=400, detail="Nonexistent site type: %s" % name)
-    return metaClass
-
-def getMetaTarget(name):
-    try:
-        metaClass = getMeta('MetaTargets', name)
-    except:
-        raise HTTPException(status_code=400, detail="Nonexistent target type: %s" % name)
-    return metaClass
