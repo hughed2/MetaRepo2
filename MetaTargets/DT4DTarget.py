@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 
-from MetaTargetBase import MetaTargetBase
+from .MetaTargetBase import MetaTargetBase
 
 class DT4DTarget(MetaTargetBase):
     name = 'DT4DTarget'

@@ -153,20 +153,25 @@ def updateDoc(notateBody, userInfo):
         raise HTTPException(status_code=500, detail="Update failed for unknown reason")
     return ''
 
-### Get MetaSite
-from MetaSites.DT4DSite import DT4DSite
+### GIVEN A CLASS NAME, DYNAMICALLY RETURN IT
 
-siteDict = {DT4DSite.name : DT4DSite}
+import importlib
+
+def getMeta(metaType, name):
+    metaModule = importlib.import_module(("%s.%s") % (metaType, name))
+    metaClass = getattr(metaModule, name)
+    return metaClass
+
 def getMetaSite(name):
-    if name not in siteDict:
+    try:
+        metaClass = getMeta('MetaSites', name)
+    except:
         raise HTTPException(status_code=400, detail="Nonexistent site type: %s" % name)
-    return siteDict[name]
+    return metaClass
 
-### Get MetaTarget
-from MetaTargets.DT4DTarget import DT4DTarget
-
-targetDict = {DT4DTarget.name : DT4DTarget}
 def getMetaTarget(name):
-    if name not in targetDict:
+    try:
+        metaClass = getMeta('MetaTargets', name)
+    except:
         raise HTTPException(status_code=400, detail="Nonexistent target type: %s" % name)
-    return targetDict[name]
+    return metaClass

@@ -1,7 +1,11 @@
 from fastapi import HTTPException
 
-from ..auth import inGroup 
-from MetaSiteBase import MetaSiteBase
+# Can't do an "import ..auth" in importlib, so we need to add '..' to the path
+import sys
+sys.path.append('..')
+from auth import inGroup 
+
+from .MetaSiteBase import MetaSiteBase
 
 class DT4DSite(MetaSiteBase):
     name = 'DT4DSite'
