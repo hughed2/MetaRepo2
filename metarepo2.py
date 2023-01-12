@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException, Header
 from pydantic import BaseModel
 from typing import List, Union
 
-from _impl import authenticate, createDoc, updateDoc, DocStatus, findElasticsearch, listElasticsearch
+from _impl import *
 
 metaRepoApp = FastAPI()
 
@@ -62,3 +62,13 @@ def list(page: int,
 
     return listElasticsearch(page, authorization)
     
+@metaRepoApp.post("/metarepo/admin/forceNotate")
+def forceNotate(metasheet: dict,
+         authorization: Union[str, None] = Header(default=None)) -> str:
+    authorization = authenticate(authorization)
+    if authorization is None or int(authorization["expiresAt"]) < time.time()*1000: # expiresAt is in ms, time.time() is in seconds
+        raise HTTPException(status_code=401)
+    
+    retVal = forceNotate(metasheet, authorization)
+        
+    return retVal

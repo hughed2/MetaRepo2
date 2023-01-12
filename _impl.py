@@ -121,6 +121,26 @@ def createDoc(notateBody, userInfo):
     
     return retVal
 
+def forceNotate(metasheet, userInfo):
+    # This is similar to a create, but with NO validation, so admins can add whatever they want
+
+    # Check the user group -- only admins allowed
+    groups = getGroups(userInfo)
+    groups = [group['idmGroupId'] for group in groups]
+    admin_group = config.get("ADMIN", "admin_group", fallback=None)
+    if admin_group is None or admin_group not in groups:
+        raise HTTPException(status_code=401, detail="Only members of the admin group may use the forceNotate query")
+    
+    docId = metasheet.get('docId', str(uuid.uuid4())) # If a docId isn't supplied, we have to make one
+    metasheet['docId'] = docId
+    
+    es = connectElasticsearch()
+    es.create(index="meta", id=docId, document=metasheet)
+    
+    retVal = {'docId' : docId}
+    
+    return retVal
+
 def updateDoc(notateBody, userInfo):
     # Given a docId of a previously created document, update it
     # Note that if metadata fields are updated, they're saved in the archive
