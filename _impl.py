@@ -29,6 +29,29 @@ def connectElasticsearch():
                                    config.get("ELASTICSEARCH", "elastic_password")))
     return es
 
+def listElasticsearch(page, userInfo):
+    # This returns all documents, 1000 at a time
+    # Fow now, it's admin only.
+    # "page" allows pagination so you can cycle through. Note that elasticsearch only allows 10,000 docs total to be returned by a match_all, even with pages
+
+    # Check the user group -- only admins allowed for now
+    groups = getGroups(userInfo)
+    groups = [group['idmGroupId'] for group in groups]
+    admin_group = config.get("ADMIN", "admin_group", fallback=None)
+    if admin_group is None or admin_group not in groups:
+        raise HTTPException(status_code=401, detail="Only members of the admin group may use the list query")
+    
+    # Now perform a match_all query with the appropriate page
+    query = {"query": "match_all" : {}}
+    es = connectElasticsearch()
+    results = es.search(index="meta", body=query, size=1000, from=page*1000)
+
+    # We only want to return the actual sheets, not the elasticsearch cruft
+    results = results["hits"]["hits"]
+    results = [doc["_source"] for doc in results]
+    
+    return results
+
 def findElasticsearch(filters, userInfo):
     # We need to construct a search using the elasticsearch DSL
     # For now, we're just doing a filter--"and" join all search parameters
