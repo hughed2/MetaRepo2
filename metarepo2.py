@@ -1,74 +1,81 @@
-import time
+""" The basic API for MetaRepo2. This file should never contain much more
+than is needed to understand each endpoint's inputs and output """
 
-from fastapi import FastAPI, HTTPException, Header
-from pydantic import BaseModel
 from typing import List, Union
+from attr import define
+from fastapi import FastAPI, Header
 
-from _impl import *
+import _impl
+
+from auth import authenticate, check_authorization
 
 metaRepoApp = FastAPI()
 
 ### REQUEST BODY STRUCTURES
 
-class NotateBody(BaseModel):
+# The following line is an instruction to "pylint" so devs don't get errors
+# pylint: disable=too-few-public-methods missing-class-docstring
+
+@define
+class NotateBody:
     docId: Union[str, None] = None
     docSetId: Union[List[str], None] = None
     displayName: Union[str, None] = None
     userMetadata: Union[dict, None] = None
-    siteClass: Union[str, None] = None    
+    siteClass: Union[str, None] = None
     siteMetadata: Union[dict, None] = None
     targetClass: Union[str, None] = None
     targetMetadata: Union[dict, None] = None
     archiveComment: Union[str, None] = None
-    
-class FindBody(BaseModel):
+
+@define
+class FindBody():
     filters: dict = {}
 
 ### API ENDPOINTS
 
 @metaRepoApp.post("/metarepo/notate")
-def notate(notateBody: NotateBody,
+def notate(notate_body: NotateBody,
          authorization: Union[str, None] = Header(default=None)) -> str:
+    """ Add or update a document within the metarepo """
     authorization = authenticate(authorization)
-    if authorization is None or int(authorization["expiresAt"]) < time.time()*1000: # expiresAt is in ms, time.time() is in seconds
-        raise HTTPException(status_code=401)
-    
-    if notateBody.docId is None:
-        retVal = createDoc(notateBody, authorization)
+    check_authorization(authorization)
+
+    if notate_body.docId is None:
+        ret_val = _impl.create_doc(notate_body, authorization)
     else:
-        retVal = updateDoc(notateBody, authorization)
-        
-    return retVal
+        ret_val = _impl.update_doc(notate_body, authorization)
+
+    return ret_val
 
 @metaRepoApp.get("/metarepo/find")
-def find(findBody: FindBody,
+def find(find_body: FindBody,
          authorization: Union[str, None] = Header(default=None)) -> List[dict]:
+    """ Use filters to find a document within the metarepo """
     authorization = authenticate(authorization)
-    if not authorization or int(authorization["expiresAt"]) < time.time()*1000: # expiresAt is in ms, time.time() is in seconds
-        raise HTTPException(status_code=401)
+    check_authorization(authorization)
 
     # user can only see available docs
-    findBody.filters["status"] = DocStatus.AVAILABLE.value
+    find_body.filters["status"] = _impl.DocStatus.AVAILABLE.value
 
-    return findElasticsearch(findBody.filters, authorization)
-    
-    
+    return _impl.find_elasticsearch(find_body.filters, authorization)
+
 @metaRepoApp.get("/metarepo/admin/list")
-def list(page: int,
+def list_(page: int,
          authorization: Union[str, None] = Header(default=None)) -> List[dict]:
+    """ Admin only: list all documents within the metarepo """
     authorization = authenticate(authorization)
-    if not authorization or int(authorization["expiresAt"]) < time.time()*1000: # expiresAt is in ms, time.time() is in seconds
-        raise HTTPException(status_code=401)
+    check_authorization(authorization)
 
-    return listElasticsearch(page, authorization)
-    
+    return _impl.list_elasticsearch(page, authorization)
+
 @metaRepoApp.post("/metarepo/admin/forceNotate")
-def forceNotate(metasheet: dict,
+def force_notate(metasheet: dict,
          authorization: Union[str, None] = Header(default=None)) -> str:
+    """ Admin only: add a doc to the metarepo without validation """
     authorization = authenticate(authorization)
-    if authorization is None or int(authorization["expiresAt"]) < time.time()*1000: # expiresAt is in ms, time.time() is in seconds
-        raise HTTPException(status_code=401)
-    
-    retVal = forceNotate(metasheet, authorization)
-        
-    return retVal
+    check_authorization(authorization)
+
+    ret_val = _impl.force_notate(metasheet, authorization)
+
+    return ret_val
