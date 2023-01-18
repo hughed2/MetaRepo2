@@ -60,14 +60,14 @@ def find(find_body: FindBody,
 
     return _impl.find_elasticsearch(find_body.filters, authorization)
 
-@metaRepoApp.get("/metarepo/admin/list")
-def list_(page: int,
+@metaRepoApp.get("/metarepo/admin/find_all")
+def find_all(page: int,
          authorization: Union[str, None] = Header(default=None)) -> List[dict]:
     """ Admin only: list all documents within the metarepo """
     authorization = authenticate(authorization)
     check_authorization(authorization)
 
-    return _impl.list_elasticsearch(page, authorization)
+    return _impl.find_all_elasticsearch(page, authorization)
 
 @metaRepoApp.post("/metarepo/admin/forceNotate")
 def force_notate(metasheet: dict,

@@ -40,7 +40,7 @@ def connect_elasticsearch():
     return els
 
 
-def list_elasticsearch(page, user_info):
+def find_all_elasticsearch(page, user_info):
     """Returns all documents, 1000 at a time. Fow now, it's admin only.
     "page" allows pagination for more docs, with a max of 10k results"""
 
