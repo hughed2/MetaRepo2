@@ -2,13 +2,13 @@
 import sys
 import requests
 
-def export_validation(metasheet):
+def identity_transform(metasheet):
     """ This is meant to be overridden by users
     For example, if you want to edit an s3 url for each metasheet, or change the target type
     By default, do nothing """
     return metasheet
 
-def import_export(import_url, import_token, export_url, export_token, validation=export_validation):
+def import_export(import_url, import_token, export_url, export_token, transform=identity_transform):
     """ Perform an import from one MetaRepo and export to another """
     if import_url[-1] == '/': # Strip possible trailing slashes
         import_url = import_url[:-1]
@@ -20,7 +20,7 @@ def import_export(import_url, import_token, export_url, export_token, validation
     page = 0
     while not finished:
         # This should return a list of up to 1000 metasheets
-        res_im = requests.get(f"{import_url}/metarepo/admin/list",
+        res_im = requests.get(f"{import_url}/metarepo/admin/find_all",
                           headers={"Authorization" : f"Bearer {import_token}"},
                           data={"page" : page},
                           timeout=10)
@@ -33,7 +33,9 @@ def import_export(import_url, import_token, export_url, export_token, validation
 
         metasheets = res_im.json()
         for metasheet in metasheets:
-            metasheet =  validation(metasheet)
+            metasheet =  transform(metasheet)
+            if not metasheet:
+                continue
 
             res_ex = requests.post(f"{export_url}/metarepo/admin/forceNotate",
                               headers={"Authorization" : f"Bearer {export_token}"},
