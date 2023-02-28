@@ -13,13 +13,13 @@ class DT4DTarget(MetaTargetBase):
 
         # DT4D Target Metadata is entirely supplied by the user. So make sure every key
         # has been provided, and no extra keys have been provided
-        targetMetadataFields = ['fileName', 'filePath', 'fileSize', 'storageKey', 'bucketName']
+        target_metadata_fields = ['fileName', 'filePath', 'fileSize', 'storageKey', 'bucketName']
         for key in doc:
-            if key not in targetMetadataFields:
+            if key not in target_metadata_fields:
                 raise HTTPException(status_code=400, detail="Incorrect targetMetadata field {key}!")
     
         # Finalize targetMetadata
-        for key in targetMetadataFields:
+        for key in target_metadata_fields:
             if key not in doc:
                 raise HTTPException(status_code=400, detail=f"targetMetadata must include a {key}!")
 

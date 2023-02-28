@@ -7,7 +7,7 @@ import requests
 from fastapi import HTTPException
 
 config = configparser.ConfigParser()
-config.read('metarepo.conf')
+config.read('repo.conf')
 
 def authenticate(token):
     """ Given a token, get the associated user """
