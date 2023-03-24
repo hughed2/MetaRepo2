@@ -21,7 +21,7 @@ class ElasticsearchRepository(RepoBase):
                     config.get(config_field, "elastic_password")))
         return els
     
-    def find(self, filters: dict=None, groups: list=None, page: int=0) -> list[dict]:
+    def find(self, filters: dict=None, groups: list=None, page: int=0):
         if filters is None: filters = {}
         if groups is None: groups = []
         

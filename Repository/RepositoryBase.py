@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 class RepoBase(ABC):
     
     @abstractmethod
-    def find(self, filters: dict=None, groups: list=None, page: int=0) -> list[dict]:
+    def find(self, filters: dict=None, groups: list=None, page: int=0):
         """A find should do a hard match on every filter
         If groups are provided, we should match one
         page allows for pagination if we're doing multiple searches

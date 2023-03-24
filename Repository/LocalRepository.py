@@ -31,7 +31,7 @@ class LocalRepository(RepoBase):
                                 detail=f"Could not write to repo file {filename}")
 
     
-    def find(self, filters: dict=None, groups: list=None, page: int=0) -> list[dict]:
+    def find(self, filters: dict=None, groups: list=None, page: int=0):
         # Read json directly from a file
         repo = self._read_repo()
                     
