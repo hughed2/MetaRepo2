@@ -62,7 +62,8 @@ class ElasticsearchRepository(RepoBase):
         try:
             els = self._connect_elasticsearch()
             els.create(index="meta", id=doc_id, document=doc)
-        except:
+        except Exception as ex:
+            print("Notate failed: " + ex.message)
             raise HTTPException(status_code=500,
                                 detail="Update failed for unknown reason")
 
@@ -70,7 +71,8 @@ class ElasticsearchRepository(RepoBase):
         try:
             els = self._connect_elasticsearch()
             update = els.update(index="meta", id=doc_id, doc=update_fields, refresh=True)
-        except:
+        except Exception as ex:
+            print("Update failed: " + ex.message)
             raise HTTPException(status_code=500,
                                 detail="Update failed for unknown reason")
 
