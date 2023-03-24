@@ -42,7 +42,7 @@ def find_all(page, user_info):
             detail="Only members of the admin group may use the list query")
             
     # Now perform a match_all query with the appropriate page
-    repo = get_repo()
+    repo = get_repo()()
     results = repo.find(page=page)
 
     return results
@@ -69,7 +69,7 @@ def find(filters, user_info):
     groups = [group['idmGroupId'] for group in groups]
     groups.append(user_info["username"])  # sso is a valid "group"
 
-    repo = get_repo()
+    repo = get_repo()()
     results = repo.find(filters, groups)
 
     return results
@@ -112,7 +112,7 @@ def create_doc(notate_body, user_info):
     metasheet['siteMetadata'] = meta_site.validate_site_metadata(
         notate_body, user_info)
 
-    repo = get_repo()
+    repo = get_repo()()
     repo.notate(metasheet)
 
     ret_val = {'docId': doc_id}
@@ -136,7 +136,7 @@ def force_notate(metasheet, user_info):
     doc_id = metasheet.get('docId', str(uuid.uuid4()))
     metasheet['docId'] = doc_id
 
-    repo = get_repo()
+    repo = get_repo()()
     repo.notate(metasheet)
 
     ret_val = {'docId': doc_id}
@@ -150,7 +150,7 @@ def update_doc(notate_body, user_info):
 
     # First, make sure the document exists and is available to the user"""
     doc_id = notate_body.docId
-    repo = get_repo()
+    repo = get_repo()()
     find_filters = {"docId": doc_id}
     doc = find(find_filters, user_info)
     if not doc:
