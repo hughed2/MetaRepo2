@@ -106,8 +106,10 @@ def create_doc(notate_body, user_info):
     metasheet['targetMetadata'] = meta_target.validate_target_metadata(
         notate_body, user_info)
 
-    if 'siteClass' not in notate_body:
-        raise HTTPException(status_code=400, detail="Must include a siteClass")
+    if notate_body.siteClass is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Must include a siteClass")
     meta_site = get_meta_site(notate_body)()
     metasheet['siteMetadata'] = meta_site.validate_site_metadata(
         notate_body, user_info)
