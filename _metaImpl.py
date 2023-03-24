@@ -90,24 +90,24 @@ def create_doc(notate_body, user_info):
     metasheet['timestamp'] = time.time()
 
     # Initialize our metadata fields in case the user didn't supply them
-    metasheet['metadata'] = notate_body.metadata or {}
-    notate_body.targetMetadata = notate_body.targetMetadata or {}
+    metasheet['userMetadata'] = notate_body.userMetadata or {}
+    notate_body.targetMetadata = notate_body.targetMetadata or {} # We'll fill in the actual metasheet next
     notate_body.siteMetadata = notate_body.siteMetadata or {}
     metasheet['frameworkArchive'] = []
     metasheet['metadataArchive'] = []
     metasheet['targetMetadataArchive'] = []
     metasheet['siteMetadataArchive'] = []
 
-    if 'targetType' not in notate_body:
+    if notate_body.targetClass is None:
         raise HTTPException(
             status_code=400,
-            detail="Must include a targetType")
+            detail="Must include a targetClass")
     meta_target = get_meta_target(notate_body)()
     metasheet['targetMetadata'] = meta_target.validate_target_metadata(
         notate_body, user_info)
 
-    if 'siteType' not in notate_body:
-        raise HTTPException(status_code=400, detail="Must include a siteType")
+    if 'siteClass' not in notate_body:
+        raise HTTPException(status_code=400, detail="Must include a siteClass")
     meta_site = get_meta_site(notate_body)()
     metasheet['siteMetadata'] = meta_site.validate_site_metadata(
         notate_body, user_info)
@@ -196,11 +196,11 @@ def update_doc(notate_body, user_info):
         metadata_archive.append(archive_format)
         update_query["metadataArchive"] = metadata_archive
 
-    meta_target = get_meta_target(doc['targetType'])()
+    meta_target = get_meta_target(doc['targetClass'])()
     update_query = meta_target.update_target_metadata(
         doc, notate_body, update_query, archive_format)
 
-    meta_site = get_meta_site(doc['siteType'])()
+    meta_site = get_meta_site(doc['siteClass'])()
     update_query = meta_site.update_site_metadata(
         doc, notate_body, update_query, archive_format)
 
