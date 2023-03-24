@@ -24,7 +24,7 @@ class DT4DSite(MetaSiteBase):
         for key in doc:
             if key not in siteMetadataFields:
                 raise HTTPException(status_code=400,
-                                    detail=f"Incorrect targetMetadata field {key}!")
+                                    detail=f"Incorrect siteMetadata field {key}!")
 
         # Users can do whatever 'type' they want, but for now we typically use SIM and TOOL
         if 'type' not in doc:
@@ -69,7 +69,7 @@ class DT4DSite(MetaSiteBase):
             for key in update_body.siteMetadata:
                 if key not in site_metadata_fields:
                     raise HTTPException(status_code=400,
-                                        detail="Incorrect targetMetadata field {key}!")
+                                        detail="Incorrect siteMetadata field {key}!")
 
             update_query["siteMetadata"] = update_body.siteMetadata
             archive_format["previous"] = doc["siteMetadata"]
