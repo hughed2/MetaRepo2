@@ -44,7 +44,7 @@ def notate(notate_body: NotateBody,
     else:
         ret_val = _metaImpl.update_doc(notate_body, authorization)
 
-    return ret_val
+    return str(ret_val)
 
 @app.get("/find")
 def find(find_body: FindBody,
