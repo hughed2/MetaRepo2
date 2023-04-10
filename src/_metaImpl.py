@@ -7,8 +7,8 @@ import uuid
 from enum import Enum
 from fastapi import HTTPException
 
-from _resolver import get_meta_site, get_meta_target, get_repo
-from auth import get_groups
+from ._resolver import get_meta_site, get_meta_target, get_repo
+from .auth import get_groups
 
 
 config = configparser.ConfigParser()

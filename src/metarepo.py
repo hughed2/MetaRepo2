@@ -5,9 +5,9 @@ from typing import List, Union
 from fastapi import FastAPI, Header
 from pydantic import BaseModel
 
-import _metaImpl
+from . import _metaImpl
 
-from auth import authenticate, check_authorization
+from .auth import authenticate, check_authorization
 
 app = FastAPI()
 

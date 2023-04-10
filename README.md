@@ -59,12 +59,12 @@ This is an example of a complete, functional config file using the elasticsearch
 To run MetaRepo, a config file must be created and stored in the base MetaRepo/ directory. MetaRepo itself is a FastAPI app, and users may wish to view [the FastAPI documentation](https://fastapi.tiangolo.com) for more details on use. Alternatively, there are a couple easy ways to get started, depending on whether the user wishes to run MetaRepo directly on their machine, or use a docker container.
 
 ### Running MetaRepo Directly
-MetaRepo requires Python 3.9 at a minimum. If you don't already have it, install from [the Python release site](https://www.python.org/downloads). First, make sure you have all dependencies installed. Assuming you're in the MetaRepo/src directory, you can install dependencies with this command:
+MetaRepo requires Python 3.9 at a minimum. If you don't already have it, install from [the Python release site](https://www.python.org/downloads). First, make sure you have all dependencies installed. Assuming you're in the MetaRepo directory, you can install dependencies with this command:
 
     pip install --no-cache-dir --upgrade -r requirements.txt
 Once you have your dependencies, you can start MetaRepo using uvicorn (automatically installed in the previous step):
 
-    uvicorn metarepo:app --port 8000
+    uvicorn src.metarepo:app --port 8000
 Uvicorn has many optional parameters, [so the documentation may be of use](https://www.uvicorn.org). The user may update the port number to fit their needs.
 
 ### Running MetaRepo Through Docker
