@@ -35,7 +35,7 @@ class DT4DTarget(MetaTargetBase):
                 if key not in target_metadata_fields:
                     raise HTTPException(status_code=400, detail=f"Incorrect targetMetadata field {key}!")
     
-            update_query["targetMetadata"] = update_body.target_metadata
+            update_query["targetMetadata"] = update_body.targetMetadata
             archive_format["previous"] = doc["targetMetadata"]
             target_metadata_archive = doc["targetMetadataArchive"]
             target_metadata_archive.append(archive_format)

@@ -102,7 +102,8 @@ def create_doc(notate_body, user_info):
         raise HTTPException(
             status_code=400,
             detail="Must include a targetClass")
-    meta_target = get_meta_target(notate_body)()
+    metasheet["targetClass"] = notate_body.targetClass
+    meta_target = get_meta_target(notate_body.targetClass)()
     metasheet['targetMetadata'] = meta_target.validate_target_metadata(
         notate_body, user_info)
 
@@ -110,7 +111,8 @@ def create_doc(notate_body, user_info):
         raise HTTPException(
             status_code=400,
             detail="Must include a siteClass")
-    meta_site = get_meta_site(notate_body)()
+    metasheet["siteClass"] = notate_body.siteClass
+    meta_site = get_meta_site(notate_body.siteClass)()
     metasheet['siteMetadata'] = meta_site.validate_site_metadata(
         notate_body, user_info)
 
@@ -191,18 +193,18 @@ def update_doc(notate_body, user_info):
         update_query["frameworkArchive"] = framework_archive
 
     # If we update any metadata, save it in the archive
-    if notate_body.metadata is not None:
-        update_query["metadata"] = notate_body.metadata
-        archive_format["previous"] = doc["metadata"]
+    if notate_body.userMetadata is not None:
+        update_query["userMetadata"] = notate_body.userMetadata
+        archive_format["previous"] = doc["userMetadata"]
         metadata_archive = doc["metadataArchive"]
         metadata_archive.append(archive_format)
         update_query["metadataArchive"] = metadata_archive
 
-    meta_target = get_meta_target(doc['targetClass'])()
+    meta_target = get_meta_target(doc["targetClass"])()
     update_query = meta_target.update_target_metadata(
         doc, notate_body, update_query, archive_format)
 
-    meta_site = get_meta_site(doc['siteClass'])()
+    meta_site = get_meta_site(doc["siteClass"])()
     update_query = meta_site.update_site_metadata(
         doc, notate_body, update_query, archive_format)
 

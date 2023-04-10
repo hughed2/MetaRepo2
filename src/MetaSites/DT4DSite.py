@@ -61,7 +61,7 @@ class DT4DSite(MetaSiteBase):
 
     def update_site_metadata(self, doc : dict, update_body: dict,
                            update_query : dict, archive_format : dict) -> dict:
-        if update_body.site_metadata is not None:
+        if update_body.siteMetadata is not None:
             # Make sure siteMetadata doesn't have any fields it's not supposed to
             site_metadata_fields = ['type', 'versionMajor', 'versionMinor', 'versionPatch',
                                   'tenant', 'workflowId',

@@ -21,15 +21,13 @@ def _get_meta(meta_type_cls, meta_type_str, name):
                             detail=f"Nonexistent {meta_type_str} type: {name}") from exc
     return meta_class
 
-def get_meta_site(metadata):
+def get_meta_site(name):
     """ Dynamically import a site given a string name """
-    name = metadata.siteClass
     meta_class = _get_meta('MetaSites', 'site', name)
     return meta_class
 
-def get_meta_target(metadata):
+def get_meta_target(name):
     """ Dynamically import a target given a string name """
-    name = metadata.targetClass
     meta_class = _get_meta('MetaTargets', 'target', name)
     return meta_class
 
