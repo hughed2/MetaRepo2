@@ -12,7 +12,7 @@ from auth import get_groups
 
 
 config = configparser.ConfigParser()
-config.read('repo.conf')
+config.read('metarepo.conf')
 
 
 

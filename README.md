@@ -20,7 +20,7 @@ Each metasheet has the following pieces of data:
  -  siteMetadataArchive: An archive similar to the frameworkArchive, corresponding to changes in siteMetadata.
 
 ## Config File
-MetaRepo requires a config file called "MetaRepo/repo.conf" to be used. It's in the ini file format, with a series of config headers and parameters. To understand how headers and parameters are used, see the example below. The current config headers and parameters are:
+MetaRepo requires a config file called "MetaRepo/metarepo.conf" to be used. It's in the ini file format, with a series of config headers and parameters. To understand how headers and parameters are used, see the example below. The current config headers and parameters are:
 
 - BASE
   - repotype: Which type of repo to use to store the metasheets (required)
@@ -68,7 +68,7 @@ Once you have your dependencies, you can start MetaRepo using uvicorn (automatic
 Uvicorn has many optional parameters, [so the documentation may be of use](https://www.uvicorn.org). The user may update the port number to fit their needs.
 
 ### Running MetaRepo Through Docker
-MetaRepo includes a Dockerfile, allowing easy deployment. It's recommended to use the sql repo type, unless the user has their own custom repo. After creating the repo.conf file, simply use the following commands in the MetaRepo/ directory:
+MetaRepo includes a Dockerfile, allowing easy deployment. It's recommended to use the sql repo type, unless the user has their own custom repo. After creating the metarepo.conf file, simply use the following commands in the MetaRepo/ directory:
 
     docker build -t metarepo .
     docker run -p 8000:8000 metarepo

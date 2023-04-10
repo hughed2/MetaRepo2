@@ -7,7 +7,7 @@ from fastapi import HTTPException
 from .RepositoryBase import RepoBase
 
 config = configparser.ConfigParser()
-config.read('repo.conf')
+config.read('metarepo.conf')
 
 class SQLRepository(RepoBase):
     """

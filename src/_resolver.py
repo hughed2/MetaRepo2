@@ -8,7 +8,7 @@ import importlib
 from fastapi import HTTPException
 
 config = configparser.ConfigParser()
-config.read('repo.conf')
+config.read('metarepo.conf')
 
 def _get_meta(meta_type_cls, meta_type_str, name):
     """ Perform a dynamic import from one of our subdirectories """

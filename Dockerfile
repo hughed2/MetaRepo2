@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 # Copy in the code and a config file. If a config file is not provided, this will result in an error
 COPY ./src /app/src
 
-COPY ./repo.conf /app/src/repo.conf
+COPY ./metarepo.conf /app/src/metarepo.conf
 
 # This will run on 0.0.0.0:8000 in the docker container. When using "docker run" or "docker create" with this image,
 # make sure to add a "-p xxxx:8000" flag, where xxxx is the actual desired port, even if it's still 8000.
